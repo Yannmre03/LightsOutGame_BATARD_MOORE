@@ -10,6 +10,8 @@ package lightsoutmoorebatard;
  */
 public class Grille {
     cellule[][] grille = new cellule[5][5];
+    int cmpt= 0;
+    Joueur joueurNouv;
 
     public Grille() {
         for (int i = 4; i >= 0; i--) {
@@ -24,6 +26,7 @@ public class Grille {
     }
 
     public void celluleClicked(int i, int j) {
+        cmpt +=1;
         grille[i][j].changeState();
         if (i < 4) {
             grille[i + 1][j].changeState();
@@ -62,6 +65,10 @@ public class Grille {
         return grille[ligne][colonne].isOn();
     }
     
-    
-    
+    public void setJoueur(Joueur addJoueur){
+        joueurNouv = addJoueur;
+    }
+    public Joueur getJoueur(){
+        return joueurNouv;
+    }
 }
