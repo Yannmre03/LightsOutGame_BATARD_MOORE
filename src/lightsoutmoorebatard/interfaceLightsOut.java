@@ -41,7 +41,7 @@ public class interfaceLightsOut extends javax.swing.JFrame {
                         boardPage.repaint();
                         compteur.setText(Integer.toString(grilleInterface.cmpt));
 
-                        if (grilleInterface.grilleEteinte() == false) {
+                        if (grilleInterface.grilleEteinte()) {
                             classement(grilleInterface.getJoueur(), grilleInterface.cmpt);
                         }
                     }
