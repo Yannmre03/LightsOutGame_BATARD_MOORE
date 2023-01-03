@@ -11,21 +11,30 @@ import java.util.Random;
  * @author Administrateur
  */
 public class interfaceLightsOut extends javax.swing.JFrame {
+
     private Grille grilleInterface = new Grille();
+
     /**
      * Creates new form interfaceLightsOut
      */
     public interfaceLightsOut() {
         initComponents();
         //boardPage.setVisible(false);
-        for (int i = 4; i >= 0; i--){
-            for(int j =0; j<5; j++){
+        for (int i = 4; i >= 0; i--) {
+            for (int j = 0; j < 5; j++) {
                 celluleGraph cellGraph = new celluleGraph(grilleInterface.retournerCase(i, j));
+                cellGraph.addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {
+                        cellule c = cellGraph.celluleAssociee;
+                        grilleInterface.celluleClicked(c.coordX, c.coordY);
+                        boardPage.repaint();
+                    }
+                });
+
                 boardPage.add(cellGraph);
             }
         }
-        
-        
+
     }
 
     /**
@@ -88,53 +97,24 @@ public class interfaceLightsOut extends javax.swing.JFrame {
     private void startActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startActionPerformed
         // TODO add your handling code here:
         String nom = name.toString();
-        Joueur joueur= new Joueur(nom);
+        Joueur joueur = new Joueur(nom);
         setOn();
         boardPage.repaint();
-        
-        cellGraph.addActionListener(new java.awt.event.ActionListener() {
-                    public void actionPerformed(java.awt.event.ActionEvent evt) {
-                        CelluleDeGrille c = cellGraph2.celluleAssociee;
-                        if (c.getJetonCourant() == null) {
-                            infoMessage.setText("la case est vide");
-                        }
-                        if (c.getJetonCourant().lireCouleur().equals(gameBis.getJoueurCourant().getCouleur())) {
-                            infoMessage.setText("Vous avez bien récupérer un de vos jeton");
-                            gameBis.getJoueurCourant().ajouterJeton(c.recupererJeton());
-                            changeJoueurCourant();
-                        }else{
-                            if(gameBis.getJoueurCourant().getNbDesintegrateurs() >0){
-                                infoMessage.setText("Vous avez bien désintégré un jeton adverse");
-                                c.supprimerJeton();
-                                gameBis.getJoueurCourant().utiliserDesintegrateur();
-                                changeJoueurCourant();
-                            }else{
-                                infoMessage.setText("Vous n'avez pas de desintegrateurs");
-                            }
-                            
-                            
-                        }
-                    }
-                });
-        
-        
     }//GEN-LAST:event_startActionPerformed
-    
-    
-    
-    
-    public void setOn(){
+
+    public void setOn() {
         Random r = new Random();
-        for(int i = 0; i < 5; i++){
+        for (int i = 0; i < 5; i++) {
             int ligne = r.nextInt(0, 5);
             int colonne = r.nextInt(0, 5);
-            if (grilleInterface.caseAllumer(ligne, colonne) == false){
-                grilleInterface.allumerCase(ligne, colonne);                
-            }else{
-                i -=1;
+            if (grilleInterface.caseAllumer(ligne, colonne) == false) {
+                grilleInterface.allumerCase(ligne, colonne);
+            } else {
+                i -= 1;
             }
         }
     }
+
     /**
      * @param args the command line arguments
      */
