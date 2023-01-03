@@ -8,6 +8,7 @@ import java.util.Random;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import org.json.simple.JSONObject;
@@ -166,7 +167,7 @@ public class interfaceLightsOut extends javax.swing.JFrame {
     public void classement(Joueur newJoueur, int score) {    // code pris d'internet et adapté à notre utilisation
         JSONParser jsonParser = new JSONParser();
         String bestScoreStr = null;
-        int bestScore = 0;
+        int bestScore = 10;
         try ( FileReader reader = new FileReader("/Users/Administrateur/NetBeansProjects/LightsOut/LightsOutMooreBatard/src/lightsoutmoorebatard/highscore.json")) // vérifie la présence du fichier, sinon renvoie l'erreur dans catch
         {
 
@@ -182,10 +183,19 @@ public class interfaceLightsOut extends javax.swing.JFrame {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        System.out.println(score + "actuel");
+        System.out.println(bestScore + "meilleur");
         if (score < bestScore) {
+            System.out.print("testboucle");
             JSONObject sampleObject = new JSONObject();
             sampleObject.put("name", newJoueur.nom);
             sampleObject.put("score", Integer.toString(score));
+            try(FileWriter file = new FileWriter("/Users/Administrateur/NetBeansProjects/LightsOut/LightsOutMooreBatard/src/lightsoutmoorebatard/highscore.json")){
+                file.write(sampleObject.toString());
+                file.flush();
+            }catch(IOException e) {
+                e.printStackTrace();
+            }
         }
 
     }
