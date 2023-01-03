@@ -14,7 +14,7 @@ public class Grille {
     public Grille() {
         for (int i = 4; i >= 0; i--) {
             for (int j = 0; j < 5; j++) {
-                grille[i][j] = new cellule();
+                grille[i][j] = new cellule(i, j);
             }
         }
     }
@@ -37,18 +37,7 @@ public class Grille {
         if (i > 0) {
             grille[i - 1][j].changeState();
         }
-        if (j > 0 && i > 0) {
-            grille[i - 1][j - 1].changeState();
-        }
-        if (j < 4 && i < 4) {
-            grille[i + 1][j + 1].changeState();
-        }
-        if (j > 0 && i < 4) {
-            grille[i + 1][j - 1].changeState();
-        }
-        if (j < 4 && i > 0) {
-            grille[i - 1][j + 1].changeState();
-        }
+        
         // au max 9 cases changent de status      
     }
     public boolean grilleEteinte(){

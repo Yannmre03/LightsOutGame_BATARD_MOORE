@@ -10,10 +10,14 @@ package lightsoutmoorebatard;
  */
 public class cellule {
     private boolean allumer;
+    int coordX;
+    int coordY;
     
     
-    public cellule(){
+    public cellule(int i, int j){
         allumer = false;
+        coordX = i;
+        coordY = j;
     }
     
     public boolean isOn(){
