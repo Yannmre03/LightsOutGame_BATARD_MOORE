@@ -75,6 +75,10 @@ public class interfaceLightsOut extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         compteur = new javax.swing.JLabel();
         messageFin = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        scoreBattre = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        nomMeilleur = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -133,6 +137,14 @@ public class interfaceLightsOut extends javax.swing.JFrame {
         infoPage.add(compteur, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 60, -1, -1));
         infoPage.add(messageFin, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 100, 190, -1));
 
+        jLabel6.setText("score à battre : ");
+        infoPage.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, -1, -1));
+        infoPage.add(scoreBattre, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 100, -1, -1));
+
+        jLabel7.setText("réalisé par: ");
+        infoPage.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 100, -1, -1));
+        infoPage.add(nomMeilleur, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 100, -1, -1));
+
         getContentPane().add(infoPage, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 200, 420, 160));
 
         pack();
@@ -144,11 +156,15 @@ public class interfaceLightsOut extends javax.swing.JFrame {
 
     private void startActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startActionPerformed
         // TODO add your handling code here:
+        start.setEnabled(false);
+        scoreBattre.setText(getScoreBattre());
+        nomMeilleur.setText(getNameBestPlayer());
         String nom = name.getText();
         Joueur joueur = new Joueur(nom);
         setOn();
         grilleInterface.setJoueur(joueur);
         boardPage.repaint();
+        
     }//GEN-LAST:event_startActionPerformed
 
     public void setOn() {
@@ -167,13 +183,11 @@ public class interfaceLightsOut extends javax.swing.JFrame {
     public void classement(Joueur newJoueur, int score) {    // code pris d'internet et adapté à notre utilisation
         JSONParser jsonParser = new JSONParser();
         String bestScoreStr = null;
-        int bestScore = 10;
+        int bestScore = 0;
         try ( FileReader reader = new FileReader("/Users/Administrateur/NetBeansProjects/LightsOut/LightsOutMooreBatard/src/lightsoutmoorebatard/highscore.json")) // vérifie la présence du fichier, sinon renvoie l'erreur dans catch
         {
-
             Object obj = jsonParser.parse(reader); //lit le JSON file et le stocke dans obj  
             JSONObject jsonObject = (JSONObject) obj;   // précise le type d'objet ? 
-            System.out.println(jsonObject);     //simple test 
             bestScoreStr = (String) jsonObject.get("score"); // stocke le highscore du fichier JSON dans bestScore
             bestScore = Integer.parseInt(bestScoreStr);
         } catch (FileNotFoundException e) {     //renvoie le type d'erreur reconctré si jamais 
@@ -183,10 +197,7 @@ public class interfaceLightsOut extends javax.swing.JFrame {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        System.out.println(score + "actuel");
-        System.out.println(bestScore + "meilleur");
         if (score < bestScore) {
-            System.out.print("testboucle");
             JSONObject sampleObject = new JSONObject();
             sampleObject.put("name", newJoueur.nom);
             sampleObject.put("score", Integer.toString(score));
@@ -200,6 +211,43 @@ public class interfaceLightsOut extends javax.swing.JFrame {
 
     }
 
+    
+    public String getScoreBattre(){
+        JSONParser jsonParser = new JSONParser();
+        String bestScoreStr = null;
+        try ( FileReader reader = new FileReader("/Users/Administrateur/NetBeansProjects/LightsOut/LightsOutMooreBatard/src/lightsoutmoorebatard/highscore.json")) // vérifie la présence du fichier, sinon renvoie l'erreur dans catch
+        {
+            Object obj = jsonParser.parse(reader); //lit le JSON file et le stocke dans obj  
+            JSONObject jsonObject = (JSONObject) obj;   // précise le type d'objet ? 
+            bestScoreStr = (String) jsonObject.get("score"); // stocke le highscore du fichier JSON dans bestScore
+        } catch (FileNotFoundException e) {     //renvoie le type d'erreur reconctré si jamais 
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return bestScoreStr;
+    }
+    
+    public String getNameBestPlayer(){
+        JSONParser jsonParser = new JSONParser();
+        String nameStr = null;       
+        try ( FileReader reader = new FileReader("/Users/Administrateur/NetBeansProjects/LightsOut/LightsOutMooreBatard/src/lightsoutmoorebatard/highscore.json")) // vérifie la présence du fichier, sinon renvoie l'erreur dans catch
+        {
+            Object obj = jsonParser.parse(reader); //lit le JSON file et le stocke dans obj  
+            JSONObject jsonObject = (JSONObject) obj;   // précise le type d'objet ? 
+            nameStr = (String) jsonObject.get("name"); // stocke le highscore du fichier JSON dans bestScore
+        } catch (FileNotFoundException e) {     //renvoie le type d'erreur reconctré si jamais 
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return nameStr;
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -244,8 +292,12 @@ public class interfaceLightsOut extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel messageFin;
     private javax.swing.JTextField name;
+    private javax.swing.JLabel nomMeilleur;
+    private javax.swing.JLabel scoreBattre;
     private javax.swing.JButton start;
     private javax.swing.JPanel startPage;
     private javax.swing.JPanel titlePage;
