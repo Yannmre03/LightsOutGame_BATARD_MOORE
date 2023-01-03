@@ -13,5 +13,8 @@ public class Joueur {
     public Joueur(String nom){
         this.nom = nom;
     }
-    
+    @Override
+    public String toString(){
+        return nom;
+    }
 }

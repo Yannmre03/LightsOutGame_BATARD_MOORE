@@ -144,7 +144,7 @@ public class interfaceLightsOut extends javax.swing.JFrame {
 
     private void startActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startActionPerformed
         // TODO add your handling code here:
-        String nom = name.toString();
+        String nom = name.getText();
         Joueur joueur = new Joueur(nom);
         setOn();
         grilleInterface.setJoueur(joueur);
