@@ -6,6 +6,16 @@ package lightsoutmoorebatard;
 
 import java.util.Random;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+
+
 /**
  *
  * @author Administrateur
@@ -28,6 +38,11 @@ public class interfaceLightsOut extends javax.swing.JFrame {
                         cellule c = cellGraph.celluleAssociee;
                         grilleInterface.celluleClicked(c.coordX, c.coordY);
                         boardPage.repaint();
+                        compteur.setText(Integer.toString(grilleInterface.cmpt));
+
+                        if (grilleInterface.grilleEteinte() == false) {
+                            classement(grilleInterface.getJoueur(), grilleInterface.cmpt);
+                        }
                     }
                 });
 
@@ -52,11 +67,18 @@ public class interfaceLightsOut extends javax.swing.JFrame {
         name = new javax.swing.JTextField();
         start = new javax.swing.JButton();
         boardPage = new javax.swing.JPanel();
+        titlePage = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        infoPage = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        compteur = new javax.swing.JLabel();
+        messageFin = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        startPage.setBackground(new java.awt.Color(255, 204, 204));
+        startPage.setBackground(new java.awt.Color(102, 255, 102));
         startPage.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setText("Débuter une partie: ");
@@ -80,12 +102,37 @@ public class interfaceLightsOut extends javax.swing.JFrame {
         });
         startPage.add(start, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 80, -1, -1));
 
-        getContentPane().add(startPage, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 10, 420, 140));
+        getContentPane().add(startPage, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 60, 420, 140));
 
         boardPage.setBackground(new java.awt.Color(0, 0, 0));
         boardPage.setPreferredSize(new java.awt.Dimension(340, 340));
         boardPage.setLayout(new java.awt.GridLayout(5, 5));
-        getContentPane().add(boardPage, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 10, 360, 360));
+        getContentPane().add(boardPage, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 360, 360));
+
+        titlePage.setBackground(new java.awt.Color(102, 255, 102));
+        titlePage.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel5.setFont(new java.awt.Font("Krungthep", 0, 24)); // NOI18N
+        jLabel5.setText("Let's play Lights Out !");
+        titlePage.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 10, -1, -1));
+
+        getContentPane().add(titlePage, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 2, 420, 60));
+
+        infoPage.setBackground(new java.awt.Color(204, 255, 204));
+        infoPage.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel3.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        jLabel3.setText("Informations sur la partie");
+        infoPage.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 20, -1, -1));
+
+        jLabel4.setText("nombre de coups:");
+        infoPage.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, -1, -1));
+
+        compteur.setText("0");
+        infoPage.add(compteur, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 60, -1, -1));
+        infoPage.add(messageFin, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 100, 190, -1));
+
+        getContentPane().add(infoPage, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 200, 420, 160));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -99,12 +146,13 @@ public class interfaceLightsOut extends javax.swing.JFrame {
         String nom = name.toString();
         Joueur joueur = new Joueur(nom);
         setOn();
+        grilleInterface.setJoueur(joueur);
         boardPage.repaint();
     }//GEN-LAST:event_startActionPerformed
 
     public void setOn() {
         Random r = new Random();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 4; i++) {
             int ligne = r.nextInt(0, 5);
             int colonne = r.nextInt(0, 5);
             if (grilleInterface.caseAllumer(ligne, colonne) == false) {
@@ -113,6 +161,33 @@ public class interfaceLightsOut extends javax.swing.JFrame {
                 i -= 1;
             }
         }
+    }
+
+    public void classement(Joueur newJoueur, int score) {    // code pris d'internet et adapté à notre utilisation
+        JSONParser jsonParser = new JSONParser();
+        String bestScoreStr = null;
+        int bestScore = 0;
+        try ( FileReader reader = new FileReader("/Users/Administrateur/NetBeansProjects/LightsOut/LightsOutMooreBatard/src/lightsoutmoorebatard/highscore.json")) // vérifie la présence du fichier, sinon renvoie l'erreur dans catch
+        {
+
+            Object obj = jsonParser.parse(reader); //lit le JSON file et le stocke dans obj  
+            JSONObject jsonObject = (JSONObject) obj;   // précise le type d'objet ? 
+            System.out.println(jsonObject);     //simple test 
+            bestScoreStr = (String) jsonObject.get("score"); // stocke le highscore du fichier JSON dans bestScore
+            bestScore = Integer.parseInt(bestScoreStr);
+        } catch (FileNotFoundException e) {     //renvoie le type d'erreur reconctré si jamais 
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (score < bestScore) {
+            JSONObject sampleObject = new JSONObject();
+            sampleObject.put("name", newJoueur.nom);
+            sampleObject.put("score", Integer.toString(score));
+        }
+
     }
 
     /**
@@ -152,10 +227,17 @@ public class interfaceLightsOut extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel boardPage;
+    private javax.swing.JLabel compteur;
+    private javax.swing.JPanel infoPage;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel messageFin;
     private javax.swing.JTextField name;
     private javax.swing.JButton start;
     private javax.swing.JPanel startPage;
+    private javax.swing.JPanel titlePage;
     // End of variables declaration//GEN-END:variables
 }
